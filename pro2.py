@@ -4,7 +4,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from scipy.stats import pearsonr,chi2_contingency
 
-df= pd.read_csv(r"C:\Users\Patel Axat\Desktop\python\ML\car_price_prediction.csv")
+df= pd.read_csv('car_price_prediction.csv')
 
 real_col=['ID', 'Price', 'Levy', 'Manufacturer', 'Model', 'Prod. year',
        'Category', 'Leather interior', 'Fuel type', 'Engine volume', 'Mileage',
