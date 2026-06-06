@@ -13,77 +13,77 @@ real_col=['ID', 'Price', 'Levy', 'Manufacturer', 'Model', 'Prod. year',
 
 pd.set_option('display.max_columns', None)
 df.drop_duplicates(inplace=True)
-# print(df.head())
-# print(df.shape)
-# df.info()
-# print(df.describe())
-# print(df.isnull().sum())
-# print(df.shape)
+print(df.head())
+print(df.shape)
+df.info()
+print(df.describe())
+print(df.isnull().sum())
+print(df.shape)
 
 df['Levy']=pd.to_numeric(df['Levy'], errors='coerce')
 df['Levy'].fillna(df['Levy'].mean(),inplace=True)
-# print(df['Levy'].isnull().sum())
+print(df['Levy'].isnull().sum())
 
 df['Engine volume']=df['Engine volume'].str.replace(r'\D','',regex=True)
 df['Engine volume']=pd.to_numeric(df['Engine volume'])
-# print(df['Engine volume'].dtype)
+print(df['Engine volume'].dtype)
 
 df['Mileage']=df['Mileage'].str.replace(r'\D','',regex=True)
 df['Mileage']=pd.to_numeric(df['Mileage'])
-# print(df['Mileage'].dtype)
+print(df['Mileage'].dtype)
 
-# print(df['Doors'].value_counts())
+print(df['Doors'].value_counts())
 df['Doors']=df['Doors'].replace({
     '04-May' : 5,
     '02-Mar' : 3,
     '>5' : 6
 })
-# print(df['Doors'].dtype)
+print(df['Doors'].dtype)
 
-# print(df['Drive wheels'].value_counts())
+print(df['Drive wheels'].value_counts())
 df['Drive wheels']=df['Drive wheels'].replace({
     'Front' : 1,
     'Rear' : 2,
     '4x4' : 4
 })
-# print(df['Doors'].dtype)
+print(df['Doors'].dtype)
 
 
 df = df[df['Price'] < df['Price'].quantile(0.99)]
-# sns.histplot(df['Price'],kde=True,bins=10)
+sns.histplot(df['Price'],kde=True,bins=10)
 
-# sns.boxplot(data=df,x='Cylinders',y='Price')
-# plt.xticks(rotation=90)
+sns.boxplot(data=df,x='Cylinders',y='Price')
+plt.xticks(rotation=90)
 
-# sns.countplot(x='Cylinders',data=df)
+sns.countplot(x='Cylinders',data=df)
 
-# sns.scatterplot(data=df,x='Cylinders', y='Price')
+sns.scatterplot(data=df,x='Cylinders', y='Price')
 
-# sns.barplot(data=df, x='Model', y='Price')
-# plt.xticks(rotation=90)
+sns.barplot(data=df, x='Model', y='Price')
+plt.xticks(rotation=90)
 
-# sns.heatmap(df.corr(),annot=True)
-# plt.tight_layout()
-# plt.show()
+sns.heatmap(df.corr(),annot=True)
+plt.tight_layout()
+plt.show()
 
-# print(df['Drive wheels'].value_counts())
+print(df['Drive wheels'].value_counts())
 X=df.drop(columns=['Price'],axis=1)
 y=df['Price']
 
 col=['Manufacturer','Model','Category','Leather interior','Fuel type','Gear box type','Drive wheels','Wheel','Color']
 enc_col=pd.get_dummies(X,columns=col)
-# print(enc_col.head(3))
+print(enc_col.head(3))
 
 corr_series = enc_col.corrwith(df['Price'])
 # Convert to DataFrame and sort
 corr_df = corr_series.to_frame(name='pearson correlation').reset_index()
 corr_df.columns = ['feature', 'pearson correlation']
 corr_df = corr_df.sort_values(by='pearson correlation', ascending=False)
-# print(corr_df.shape)
+print(corr_df.shape)
 
 alpha=0.05
 encoded_column=[col for col in enc_col if col not in real_col ]
-# print(encoded_column)
+print(encoded_column)
 df['Price_bins']=pd.qcut(df['Price'],q=4,labels=False)
 chi2_result={}
 
@@ -99,13 +99,13 @@ for col in encoded_column:
 
 chi2_df=pd.DataFrame(chi2_result).T
 chi2_df = chi2_df.sort_values(by='p_value')
-# print(chi2_df)
+print(chi2_df)
 
 col_remove=chi2_df[chi2_df['decision']=='accept null(remove)'].index.tolist()
 col_keep=chi2_df[chi2_df['decision']=='reject null(keep)'].index.tolist()
-# print(len(col_keep))
+print(len(col_keep))
 enc_colu=enc_col.drop(columns=col_remove)
-# print(enc_colu.columns)
+print(enc_colu.columns)
 
 from sklearn.preprocessing import LabelEncoder
 
@@ -115,7 +115,7 @@ enc= LabelEncoder()
 Xlabel = X
 for i in lab_col:
     Xlabel[i]=enc.fit_transform(Xlabel[i])
-# print(Xlabel)
+print(Xlabel)
 
 from sklearn.preprocessing import StandardScaler
 scaler= StandardScaler()
@@ -132,7 +132,7 @@ nb_enc=[nb_col for nb_col in Xlabel
 
 sca_col=['ID', 'Levy', 'Manufacturer', 'Model', 'Prod. year', 'Category', 'Fuel type', 'Engine volume', 'Mileage', 'Cylinders', 'Doors', 'Color', 'Airbags']
 Xlabel[sca_col] = scaler.fit_transform(Xlabel[sca_col])
-# print(Xlabel)
+print(Xlabel)
 
 
 from sklearn.model_selection import train_test_split
@@ -160,10 +160,10 @@ model2.fit(X_train,y_train)
 
 y_pred=model2.predict(X_test)
 r22= r2_score(y_test,y_pred)
-# print(r22)
+print(r22)
 n=Xlabel.shape[0]
 p=Xlabel.shape[1]
 
 a_r2= 1-((1-r2)*(n-1)) / (n-p-1)
-# print(a_r2)
+print(a_r2)
 
