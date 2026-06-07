@@ -1,0 +1,2 @@
+# car-price-prediction
+This repository features an end-to-end Machine Learning web application that predicts used car prices using an optimized Random Forest Regressor. It handles complex data pipelines with automated data cleansing, Chi-Square statistical feature validation, and categorical transformation. The final model is serialized and deployed as an interactive live dashboard using Streamlit.
